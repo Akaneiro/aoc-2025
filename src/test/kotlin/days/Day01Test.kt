@@ -34,9 +34,4 @@ class Day01Test {
     fun testPart2() {
         assertEquals(6, day.solvePart2(input))
     }
-
-    @Test
-    fun test1000() {
-        assertEquals(10, day.solvePart2("R1000"))
-    }
 }

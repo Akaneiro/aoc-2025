@@ -32,9 +32,6 @@ class Day01 : Day() {
         var zerosCount = 0
 
         rotations.forEach { rotation ->
-            val oldPosition = currentPosition
-            val newPosition = calculateNewPosition(currentPosition, rotation)
-
             // полные обороты
             val fullRotations = rotation.absoluteValue / SAFE_SIZE
             // часть от изначальных оборотов за вычетом полных оборотов
@@ -44,19 +41,19 @@ class Day01 : Day() {
 
             when {
                 effectiveRotation < 0 -> {
-                    if (crossesZeroMovingLeft(oldPosition, effectiveRotation)) {
+                    if (crossesZeroMovingLeft(currentPosition, effectiveRotation)) {
                         zerosCount++
                     }
                 }
 
                 effectiveRotation > 0 -> {
-                    if (crossesZeroMovingRight(oldPosition, effectiveRotation)) {
+                    if (crossesZeroMovingRight(currentPosition, effectiveRotation)) {
                         zerosCount++
                     }
                 }
             }
 
-            currentPosition = newPosition
+            currentPosition = calculateNewPosition(currentPosition, rotation)
         }
         return zerosCount
     }
@@ -66,7 +63,7 @@ class Day01 : Day() {
     }
 
     private fun crossesZeroMovingRight(oldPosition: Int, rotation: Int): Boolean {
-        return oldPosition + rotation >= SAFE_MAX_VALUE && oldPosition != (SAFE_MAX_VALUE - 1)
+        return oldPosition + rotation >= SAFE_SIZE && oldPosition != (SAFE_SIZE)
     }
 
     private fun calculateNewPosition(currentPosition: Int, rotation: Int): Int {
