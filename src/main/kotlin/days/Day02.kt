@@ -3,81 +3,31 @@ package ru.akaneiro.days
 class Day02 : Day() {
 
     fun solvePart1(input: String): Long {
-        return createIdsList(input)
-            .filter { isInvalidId(it) }
+        return parseIds(input)
+            .filter { id ->
+                val idLength = id.length
+                idLength % 2 == 0 && id.chunked(idLength / 2).let { it.first() == it.last() }
+            }
             .sumOf { it.toLong() }
     }
 
     fun solvePart2(input: String): Long {
-        return createIdsList(input)
-            .filter { isInValidIdPart2(it) }
+        return parseIds(input)
+            .filter { id ->
+                (1..id.length / 2).any { partLength ->
+                    val chunks = id.chunked(partLength)
+                    chunks.all { it == chunks.first() }
+                }
+            }
             .sumOf { it.toLong() }
     }
 
-    private fun createIdsList(input: String): List<String> {
-        return splitIds(input)
-            .map { (it.first..it.second).toList() }
-            .flatten()
-            .map { it.toString() }
-    }
-
-    private fun splitIds(input: String): List<Pair<Long, Long>> {
+    private fun parseIds(input: String): List<String> {
         return input.split(",")
             .map { ids ->
-                Pair(
-                    ids.substringBefore("-").toLong(),
-                    ids.substringAfter("-").toLong()
-                )
+                val (start, end) = ids.split("-")
+                start.toLong()..end.toLong()
             }
-    }
-
-    private fun isInvalidId(num: String): Boolean {
-        val length = num.length
-
-        if (length % 2 != 0) {
-            return false
-        }
-
-        val halfLength = length / 2
-        val firstHalf = num.take(halfLength)
-        val secondHalf = num.takeLast(halfLength)
-
-        return firstHalf == secondHalf
-    }
-
-    private fun isInValidIdPart2(num: String): Boolean {
-        val length = num.length
-
-        if (length < 2) {
-            return false
-        }
-
-        for (partLength in 1..length / 2) {
-            if (length % partLength != 0) {
-                continue
-            }
-
-            val repeatCount = length / partLength
-            if (repeatCount < 2) {
-                continue
-            }
-
-            val part = num.take(partLength)
-            var valid = true
-
-            for (i in 1 until repeatCount) {
-                val currentPart = num.substring(i * partLength, (i + 1) * partLength)
-                if (currentPart != part) {
-                    valid = false
-                    break
-                }
-            }
-
-            if (valid) {
-                return true
-            }
-        }
-
-        return false
+            .flatMap { range -> range.map { it.toString() } }
     }
 }
