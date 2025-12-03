@@ -6,7 +6,7 @@ class Day02 : Day() {
         return parseIds(input)
             .filter { id ->
                 val idLength = id.length
-                idLength % 2 == 0 && id.chunked(idLength / 2).let { it.first() == it.last() }
+                idLength % 2 == 0 && id.take(idLength / 2) == id.drop(idLength / 2)
             }
             .sumOf { it.toLong() }
     }
